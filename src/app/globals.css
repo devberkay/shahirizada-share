@@ -1,18 +1,19 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap");
 
 @theme {
   --color-brand: #6B0F1A;
   --color-brand-dark: #3D0A0F;
   --color-brand-light: #8B1A2A;
-  --color-accent: #C4A77D;
-  --color-cream: #FAF7F2;
-  --color-warm-white: #FFFCF8;
-  --font-family-display: "Cormorant Garamond", serif;
-  --font-family-body: "Outfit", sans-serif;
+  --color-gold: #B8956E;
+  --color-gold-light: #D4BC9A;
+  --color-cream: #F8F5F0;
+  --color-warm-white: #FDFCFA;
+  --font-display: "Fraunces", serif;
+  --font-body: "Instrument Sans", sans-serif;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -25,115 +26,166 @@ html {
 
 body {
   min-height: 100%;
-  font-family: var(--font-family-body);
+  font-family: var(--font-body);
   background: var(--color-warm-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #2D2420;
 }
 
-.noise-overlay {
+/* Grain texture */
+.grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  z-index: 100;
+  opacity: 0.025;
+  z-index: 1000;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-@keyframes float-subtle {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes expandLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes reveal-up {
-  0% { 
-    opacity: 0; 
-    transform: translateY(24px); 
-    filter: blur(4px);
+  0% {
+    background-position: -100% 0;
   }
-  100% { 
-    opacity: 1; 
-    transform: translateY(0); 
-    filter: blur(0);
+  100% {
+    background-position: 200% 0;
   }
 }
 
-@keyframes reveal-scale {
-  0% { 
-    opacity: 0; 
-    transform: scale(0.95); 
-  }
-  100% { 
-    opacity: 1; 
-    transform: scale(1); 
-  }
+.fade-up {
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
 }
 
-@keyframes draw-line {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
+.scale-reveal {
+  animation: scaleReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
 }
 
-.float-subtle {
-  animation: float-subtle 6s ease-in-out infinite;
+.expand-line {
+  animation: expandLine 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center;
+  transform: scaleX(0);
 }
 
-.reveal-up {
-  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.float-element {
+  animation: float 8s ease-in-out infinite;
 }
 
-.reveal-scale {
-  animation: reveal-scale 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.shimmer-effect {
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-.draw-line {
-  animation: draw-line 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  transform-origin: left;
-}
-
-.btn-shimmer {
+/* Button styles */
+.download-btn {
   position: relative;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-shimmer::after {
+.download-btn::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
   background-size: 200% 100%;
   opacity: 0;
   transition: opacity 0.3s;
 }
 
-.btn-shimmer:hover::after {
+.download-btn:hover::before {
   opacity: 1;
-  animation: shimmer 1s;
+  animation: shimmer 0.8s ease-out;
 }
 
-.corner-accent {
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px -12px rgba(0,0,0,0.25);
+}
+
+.download-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Decorative frame */
+.frame-corner {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  border: 1px solid #C4A77D;
-  opacity: 0.25;
+  width: 60px;
+  height: 60px;
   pointer-events: none;
 }
 
 @media (min-width: 768px) {
-  .corner-accent {
-    width: 120px;
-    height: 120px;
+  .frame-corner {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .frame-corner {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+.frame-corner svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Feature pill */
+.feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, rgba(184, 149, 110, 0.08) 0%, rgba(184, 149, 110, 0.03) 100%);
+  border: 1px solid rgba(184, 149, 110, 0.15);
+  border-radius: 100px;
+  backdrop-filter: blur(8px);
+}
+
+@media (min-width: 768px) {
+  .feature-pill {
+    padding: 12px 24px;
+    gap: 10px;
   }
 }
