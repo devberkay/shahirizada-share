@@ -1,14 +1,15 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap");
 
 @theme {
   --color-brand: #6B0F1A;
   --color-brand-dark: #3D0A0F;
   --color-brand-light: #8B1A2A;
-  --color-accent: #E8D5BA;
-  --color-cream: #FDF8F5;
-  --font-family-display: "Playfair Display", serif;
-  --font-family-body: "DM Sans", sans-serif;
+  --color-accent: #C4A77D;
+  --color-cream: #FAF7F2;
+  --color-warm-white: #FFFCF8;
+  --font-family-display: "Cormorant Garamond", serif;
+  --font-family-body: "Outfit", sans-serif;
 }
 
 * {
@@ -25,43 +26,114 @@ html {
 body {
   min-height: 100%;
   font-family: var(--font-family-body);
-  background: linear-gradient(180deg, var(--color-cream) 0%, #FFFFFF 50%, var(--color-cream) 100%);
+  background: var(--color-warm-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  z-index: 100;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 40px rgba(107, 15, 26, 0.25), 0 0 80px rgba(107, 15, 26, 0.1); }
-  50% { box-shadow: 0 0 60px rgba(107, 15, 26, 0.4), 0 0 120px rgba(107, 15, 26, 0.2); }
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-@keyframes scaleIn {
-  0% { opacity: 0; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes reveal-up {
+  0% { 
+    opacity: 0; 
+    transform: translateY(24px); 
+    filter: blur(4px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+    filter: blur(0);
+  }
 }
 
-.float-animation {
-  animation: float 8s ease-in-out infinite;
+@keyframes reveal-scale {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
 }
 
-.pulse-glow {
-  animation: pulse-glow 4s ease-in-out infinite;
+@keyframes draw-line {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 
-.fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
+.float-subtle {
+  animation: float-subtle 6s ease-in-out infinite;
 }
 
-.scale-in {
-  animation: scaleIn 0.6s ease-out forwards;
+.reveal-up {
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.reveal-scale {
+  animation: reveal-scale 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.draw-line {
+  animation: draw-line 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: left;
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-shimmer:hover::after {
+  opacity: 1;
+  animation: shimmer 1s;
+}
+
+.corner-accent {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #C4A77D;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .corner-accent {
+    width: 120px;
+    height: 120px;
+  }
 }
