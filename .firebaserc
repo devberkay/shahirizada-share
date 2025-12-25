@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "shahirizada-fresh-market"
+  },
+  "targets": {
+    "shahirizada-fresh-market": {
+      "hosting": {
+        "share": [
+          "share-shahirizada"
+        ]
+      }
+    }
+  }
+}
